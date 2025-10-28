@@ -1,0 +1,3 @@
+@echo off
+echo Running tests with pytest...
+pytest -v tests/

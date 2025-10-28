@@ -1,0 +1,3 @@
+@echo off
+echo Starting Employee Productivity API in development mode...
+uvicorn app.main_production:app --reload

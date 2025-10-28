@@ -1,0 +1,13 @@
+name,department_id,salary,revenue_generated
+John Smith,1,120000,250000
+Jane Doe,1,110000,220000
+Mike Johnson,1,95000,180000
+Sarah Williams,2,90000,200000
+David Brown,2,85000,170000
+Emily Davis,3,100000,300000
+Robert Wilson,3,95000,280000
+Jennifer Taylor,3,90000,260000
+Michael Anderson,4,85000,100000
+Lisa Thomas,4,80000,90000
+James Martinez,5,110000,150000
+Patricia Robinson,5,100000,130000

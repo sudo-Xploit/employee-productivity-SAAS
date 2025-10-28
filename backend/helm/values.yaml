@@ -1,0 +1,124 @@
+# Default values for employee-productivity-api
+# This is a YAML-formatted file.
+
+replicaCount: 2
+
+image:
+  repository: employee-productivity-api
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: api.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: api-tls-secret
+      hosts:
+        - api.example.com
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Application configuration
+app:
+  env:
+    LOG_LEVEL: "INFO"
+    JSON_LOGS: "true"
+    ENABLE_METRICS: "true"
+    HEALTH_CHECK_INCLUDE_DB: "true"
+    DB_POOL_SIZE: "10"
+    DB_MAX_OVERFLOW: "20"
+    DB_POOL_TIMEOUT: "30"
+    DB_POOL_RECYCLE: "1800"
+    DB_ECHO: "false"
+    USE_HTTPS: "false"  # HTTPS is handled by ingress
+    BACKEND_CORS_ORIGINS: '["https://app.example.com"]'
+    USERS_OPEN_REGISTRATION: "false"
+
+# Database configuration
+database:
+  # Use external database (e.g., RDS, Cloud SQL)
+  external:
+    enabled: true
+    host: "postgres.example.com"
+    port: "5432"
+    name: "employee_productivity"
+    user: "postgres"
+    existingSecret: "db-credentials"
+    existingSecretKey: "password"
+  
+  # Or deploy a PostgreSQL instance
+  postgresql:
+    enabled: false
+    postgresqlUsername: postgres
+    postgresqlDatabase: employee_productivity
+    existingSecret: "postgresql-credentials"
+    persistence:
+      enabled: true
+      size: 10Gi
+
+# Redis for caching (optional)
+redis:
+  enabled: false
+  auth:
+    enabled: true
+    existingSecret: "redis-credentials"
+    existingSecretKey: "redis-password"
+
+# Prometheus ServiceMonitor
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  scrapeTimeout: 10s
+  namespace: monitoring
+
+# Pod Disruption Budget
+pdb:
+  enabled: true
+  minAvailable: 1
